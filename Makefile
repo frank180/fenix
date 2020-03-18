@@ -37,7 +37,7 @@ else
 	./scripts/build.sh u-boot
 endif
 
-debs:
+debs: uboot kernel
 ifeq ($(and $(DISTRIBUTION),$(DISTRIB_RELEASE),$(DISTRIB_TYPE),$(DISTRIB_ARCH),$(KHADAS_BOARD),$(LINUX),$(UBOOT),$(INSTALL_TYPE)),)
 	$(call help_message)
 else
@@ -118,13 +118,13 @@ help:
 	@echo "  all           - Create image according to environment."
 	@echo "  kernel        - Build linux kernel."
 	@echo "  uboot         - Build u-boot."
-	@echo "  uboot-deb     - Build u-boot deb."
-	@echo "  kernel-deb    - Build linux deb."
-	@echo "  board-deb     - Build deb."
-	@echo "  common-deb    - Build common deb."
-	@echo "  desktop-deb   - Build desktop deb."
-	@echo "  gpu-deb       - Build gpu deb."
-	@echo "  debs          - Build all debs."
+	@echo "  uboot-deb     - Build u-boot debian package."
+	@echo "  kernel-deb    - Build linux debian package."
+	@echo "  board-deb     - Build board debian package."
+	@echo "  common-deb    - Build common debian package."
+	@echo "  desktop-deb   - Build desktop debian package."
+	@echo "  gpu-deb       - Build gpu debian package."
+	@echo "  debs          - Build all debian packages."
 	@echo "  image         - Pack update image."
 	@echo "  clean         - Cleanup."
 	@echo "  info          - Display current environment."

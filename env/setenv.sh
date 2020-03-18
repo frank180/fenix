@@ -32,6 +32,7 @@ INSTALL_TYPE=
 DISTRIB_TYPE=
 VENDOR=
 CHIP=
+EXPERT=
 
 ###############################################################
 if [ "$1" == "expert" ]; then
@@ -194,10 +195,12 @@ function choose_linux_version() {
 	echo ""
 	echo "Choose linux version:"
 	# FIXME
-	if [ "$UBOOT" == "mainline" -a "$KHADAS_BOARD" != "Edge" ]; then
-		echo "Force set to linux-mainline"
-		export LINUX="mainline"
-		return 0
+	if [ "$UBOOT" == "mainline" ]; then
+		SUPPORTED_LINUX=("mainline")
+	else
+		if [ "$EXPERT" != "yes" ]; then
+			SUPPORTED_LINUX=(`echo ${SUPPORTED_LINUX[@]} | sed s/mainline//g`)
+		fi
 	fi
 
 	i=0
@@ -500,17 +503,15 @@ function choose_install_type() {
 	echo "Choose install type:"
 	# FIXME
 	if [ "$KHADAS_BOARD" != "Edge" ] && [ "$UBOOT" == "mainline" -o "$LINUX" == "mainline" ]; then
-		echo "Force set to install-${INSTALL_TYPE_ARRAY[1]}"
-		export INSTALL_TYPE="${INSTALL_TYPE_ARRAY[1]}"
-		return
-	else
-		i=0
-		while [[ $i -lt $INSTALL_TYPE_ARRAY_LEN ]]
-		do
-			echo "$((${i}+1)). ${INSTALL_TYPE_ARRAY[$i]}"
-			let i++
-		done
+		INSTALL_TYPE_ARRAY=("SD-USB")
+		INSTALL_TYPE_ARRAY_LEN=${#INSTALL_TYPE_ARRAY[@]}
 	fi
+	i=0
+	while [[ $i -lt $INSTALL_TYPE_ARRAY_LEN ]]
+	do
+		echo "$((${i}+1)). ${INSTALL_TYPE_ARRAY[$i]}"
+		let i++
+	done
 
 	echo ""
 
