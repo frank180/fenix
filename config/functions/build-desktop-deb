@@ -131,6 +131,14 @@ build_desktop_deb() {
 		rm -rf $pkgdir/etc/skel/.local/share/applications/xfce-hdmi-resolution-settings.desktop
 	fi
 
+	# Install xserver configurations
+	mkdir -p $pkgdir/etc/X11/xorg.conf.d
+	if [ -d $ROOT/archives/filesystem/blobs/desktop/xorg/${KHADAS_BOARD} ]; then
+		if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" == "buster" ]; then
+			cp $ROOT/archives/filesystem/blobs/desktop/xorg/${KHADAS_BOARD}/* $pkgdir/etc/X11/xorg.conf.d
+		fi
+	fi
+
 	# Create desktop deb file
 	echo "Building package: $pkgname"
 	fakeroot dpkg-deb -b $pkgdir ${pkgdir}.deb
@@ -142,7 +150,7 @@ build_desktop_deb() {
 }
 
 desktop_postinstall() {
-	if [ "$DISTRIB_RELEASE" == "bionic" ] && [ "$DISTRIB_TYPE" == "xfce" ]; then
+	if [ "$DISTRIB_TYPE" == "xfce" ]; then
 		if [ -f $ROOTFS_TEMP/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml ]; then
 			if [ "$LINUX" == "mainline" ]; then
 				sed -i 's/<property name="box_move" type="bool" value=".*/<property name="box_move" type="bool" value="false"\/>/g' \
