@@ -211,7 +211,7 @@ build_board_deb() {
 
 	# Copy board special rootfs files
 	## Copy board common rootfs files
-	if [[ "$KHADAS_BOARD" =~ VIM[123] ]]; then
+	if [[ "$KHADAS_BOARD" =~ VIM[123] ]] || [[ ""$KHADAS_BOARD"" == riftone ]]; then
 		## VIMs common rootfs files
 		rsync -aI $ROOT/archives/filesystem/special/VIM-COMMON/* $pkgdir/
 	fi
