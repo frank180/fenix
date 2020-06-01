@@ -154,7 +154,7 @@ PACKAGE_LIST_ADDITIONAL="wget nano alsa-utils btrfs-progs dosfstools hddtemp iot
 PACKAGE_LIST_DESKTOP="xserver-xorg xserver-xorg-video-fbdev gvfs-backends gvfs-fuse xfonts-base xinit x11-xserver-utils xterm thunar-volman \
 	network-manager-gnome network-manager-openvpn-gnome gnome-keyring gcr libgck-1-0 p11-kit pasystray pavucontrol pulseaudio \
 	pavumeter pulseaudio-module-bluetooth blueman libpam-gnome-keyring libgl1-mesa-dri gparted synaptic apt-xapian-index \
-	policykit-1 profile-sync-daemon gnome-orca numix-gtk-theme gnome-system-tools lightdm lightdm-gtk-greeter gufw yad zenity guvcview onboard"
+	policykit-1 profile-sync-daemon gnome-orca numix-gtk-theme gnome-system-tools lightdm lightdm-gtk-greeter gufw yad zenity guvcview onboard debconf-utils"
 
 
 PACKAGE_LIST_OFFICE="gedit galculator hexchat mpv gtk2-engines gtk2-engines-murrine gtk2-engines-pixbuf \
@@ -183,6 +183,11 @@ case $DISTRIB_TYPE in
 		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_OFFICE"
 		PACKAGE_LIST_DESKTOP+=" lxde lxlauncher lxmusic lxsession-default-apps lxsession-logout lxshortcut lxtask obconf \
 			xfce4-power-manager-plugins lxde-common desktop-base"
+	;;
+	gnome)
+		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_OFFICE"
+		PACKAGE_LIST_DESKTOP+=" desktop-base software-properties-gtk yaru-theme-gtk yaru-theme-icon yaru-theme-sound gnome-terminal gnome-shell-extensions gnome-tweaks gnome-screenshot"
+		[[ $DISTRIBUTION == Ubuntu ]] && PACKAGE_LIST_DESKTOP+=" ubuntu-desktop update-manager"
 	;;
 esac
 
@@ -215,7 +220,8 @@ case $DISTRIB_RELEASE in
 		PACKAGE_LIST_RELEASE="man-db kbd gnupg2 dirmngr networkd-dispatcher libjpeg9"
 		PACKAGE_LIST_KODI="libcec4"
 		PACKAGE_LIST_SERVER_KODI="libcec4"
-		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_KODI"
+		PACKAGE_LIST_MESA="libclang-cpp9"
+		PACKAGE_LIST_DESKTOP+=" $PACKAGE_LIST_GSTREAMER $PACKAGE_LIST_KODI $PACKAGE_LIST_MESA"
 		PACKAGE_LIST_DESKTOP+=" xserver-xorg-input-all pulseaudio-module-gsettings firefox language-selector-gnome viewnior"
 	;;
 esac

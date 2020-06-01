@@ -94,6 +94,27 @@ build_desktop_deb() {
 
 	systemctl --no-reload enable hdmi_resolution.service >/dev/null 2>&1
 
+	# For GNOME desktop
+	# Set default desktop manager
+	# Mainline kernel using gdm3
+	# Legacy kernel using lightdm
+	if which gnome-session > /dev/null; then
+		if which gdm3 > /dev/null; then
+			if [ -f /boot/.next ]; then
+				DM=gdm3
+			else
+				DM=lightdm
+			fi
+			debconf-set-selections <<-EOT
+			gdm3    shared/default-x-display-manager        select  "\${DM}"
+			lightdm shared/default-x-display-manager        select  "\${DM}"
+			EOT
+
+			echo "/usr/sbin/\${DM}" > /etc/X11/default-display-manager
+			DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true dpkg-reconfigure "\${DM}"
+		fi
+	fi
+
 	exit 0
 	EOF
 
@@ -125,16 +146,18 @@ build_desktop_deb() {
 		rm -f $pkgdir/usr/local/bin/qt5_player
 		if [ "$KHADAS_BOARD" == "VIM1" ] || [ "$KHADAS_BOARD" == "VIM2" ]; then
 			rm -rf $pkgdir/etc/skel/.local/share/applications/xfce-usb3-pcie-settings.desktop
+			rm -rf $pkgdir/etc/skel/.local/share/applications/usb3-pcie-settings.desktop
 		fi
 	elif [ "$VENDOR" == "Rockchip" ]; then
 		# Remove unused menus for Rockchip platform
 		rm -rf $pkgdir/etc/skel/.local/share/applications/xfce-hdmi-resolution-settings.desktop
+		rm -rf $pkgdir/etc/skel/.local/share/applications/hdmi-resolution-settings.desktop
 	fi
 
 	# Install xserver configurations
 	mkdir -p $pkgdir/etc/X11/xorg.conf.d
 	if [ -d $ROOT/archives/filesystem/blobs/desktop/xorg/${KHADAS_BOARD} ]; then
-		if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" == "buster" ]; then
+		if [ "$LINUX" == "mainline" ] && [ "$DISTRIB_RELEASE" != "bionic" ]; then
 			cp $ROOT/archives/filesystem/blobs/desktop/xorg/${KHADAS_BOARD}/* $pkgdir/etc/X11/xorg.conf.d
 		fi
 	fi
